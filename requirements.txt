@@ -1,5 +1,5 @@
 flask==2.3.2
-twilio==8.12.1
+twilio
 openai==1.7.0
 gunicorn==20.1.0
 requests==2.31.0
