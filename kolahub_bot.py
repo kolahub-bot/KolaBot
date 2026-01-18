@@ -1,65 +1,116 @@
 from flask import Flask, request
 from twilio.twiml.messaging_response import MessagingResponse
 import openai
+import os
 
-# WEKA OPENAI API KEY YAKO HAPA
-openai.api_key = "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"
+# Soma OpenAI API key kutoka Environment
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 app = Flask(__name__)
 
-from flask import request
-from twilio.twiml.messaging_response import MessagingResponse
-
 @app.route("/bot", methods=["POST"])
 def bot():
-    incoming_msg = request.form.get('Body')
-
-    incoming_msg = request.form.get("Body", "")
+    msg = request.form.get("Body", "").strip().lower()
     resp = MessagingResponse()
-    resp.message("BOT IMEPOKEA UJUMBE WAKO SAWA ✅")
 
-    return str(resp)
+    # MANENO YOTE YANAYOWEZA KUOMBA BANDO (KAMILI SANA)
+    huduma_keywords = [
+        "bando", "bando la halotel", "bando zako", "halotel",
+        "data", "internet", "gb", "bundle", "bundles",
+        "nahitaji", "ninahitaji", "nataka", "ningependa",
+        "nisaidie", "msaada", "naomba", "tafadhali",
+        "niuzie", "nipe", "nipatie", "nunua", "kununua",
+        "kuagiza", "order", "bei", "gharama", "price",
+        "mpango", "paketi", "package",
+        "leo", "sasa", "haraka", "muda huu",
+        "gb ngapi", "bando ngapi", "nipe internet",
+        "natuma pesa", "nikilipia", "nikilipa",
+        "unauzaje", "unauza", "mna bando",
+        "line", "lain", "simu", "halopesa",
+        "nifanyie", "niwekee", "niunganishie"
+    ]
 
-    prompt = f"""
+    # KAMA NI MAOMBI YA BANDO → TUMIA AI
+    if any(word in msg for word in huduma_keywords):
+
+        prompt = f"""
 Wewe ni WhatsApp chatbot wa Kola Creative Hub.
-Unauza KOLA HALOTEL BUNDLES.
+Unauza bando za Halotel kwa upole, heshima na lugha safi ya Kiswahili.
 
-PRICE LIST:
+📦 KOLA HALOTEL BUNDLES:
+GB 5 = 4,500 TSH
 GB 6 = 6,000 TSH
 GB 7 = 7,000 TSH
 GB 8 = 8,000 TSH
-GB 9 = 9,000 TSH
-GB 10 = 9,500 TSH
+GB 10 = 9,000 TSH
 GB 12 = 11,500 TSH
-GB 15 = 13,500 TSH
+GB 15 = 12,000 TSH
 GB 20 = 18,000 TSH
 GB 25 = 23,000 TSH
 GB 30 = 27,000 TSH
 GB 35 = 30,000 TSH
 
-MALIPO:
-Tuma pesa kwa 0746460472 (Voda) – Asubuh Suba.
+💳 MALIPO:
+Tuma pesa kwa:
+0746460472 (Voda)
+Jina: Asubuh Suba
 
-Mteja amesema:
-"{incoming_msg}"
+📌 MUHIMU:
+Baada ya kulipa, mteja **atume jina la Muamala** (si screenshot).
 
-Jibu kwa Kiswahili rahisi, kwa mtindo wa biashara.
-Mwelekeze mteja jinsi ya kulipa na aeleze atume kiasi + namba.
+Mteja ameandika:
+"{msg}"
+
+👉 Jibu kwa Kiswahili kizuri cha biashara:
+- Mkaribishe kwa upole
+- Msaidia achague GB
+- Eleza bei
+- Mwelekeze malipo
+- Mkumbushe jina la Muamala
 """
 
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "Wewe ni chatbot wa mauzo ya bando za Halotel."},
-            {"role": "user", "content": prompt}
-        ]
-    )
+        try:
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "Wewe ni msaidizi wa mauzo ya bando za Halotel."},
+                    {"role": "user", "content": prompt}
+                ],
+                timeout=10
+            )
+            reply_text = response["choices"][0]["message"]["content"]
+        except Exception:
+            reply_text = (
+                "🙏 Samahani, kuna changamoto ya muda mfupi.\n"
+                "Tafadhali jaribu tena baada ya dakika chache."
+            )
 
-    reply.body(response['choices'][0]['message']['content'])
-    resp.message(f"✅ BOT IPO LIVE\nUmetuma: {incoming_msg}")
+        resp.message(reply_text)
+
+    # KAMA MTEJA ANATHIBITISHA MALIPO
+    elif any(word in msg for word in [
+        "nimelipa", "nimeshalipa", "tayari nimelipa",
+        "malipo yametumwa", "nimesha tuma pesa"
+    ]):
+        resp.message(
+            "🙏 Asante sana kwa malipo yako.\n"
+            "Tafadhali tuma **jina la Muamala** ili tukuhakikishie bando lako mara moja.\n"
+            "Ahsante kwa kuchagua Kola Creative Hub 💛"
+        )
+
+    # DEFAULT MESSAGE
+    else:
+        resp.message(
+            "👋 Karibu Kola Halotel Bundles!\n\n"
+            "Andika kwa uhuru kabisa, mfano:\n"
+            "• Nataka GB 10\n"
+            "• Naomba bando la halotel\n"
+            "• Nisaidie bando la internet\n\n"
+            "💳 Malipo: 0746460472 (Voda)\n"
+            "✍️ Baada ya kulipa, tuma **jina la Muamala**."
+        )
+
     return str(resp)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
-
-
