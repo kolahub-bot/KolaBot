@@ -10,19 +10,11 @@ app = Flask(__name__)
 from flask import request
 from twilio.twiml.messaging_response import MessagingResponse
 
-from flask import request
-from twilio.twiml.messaging_response import MessagingResponse
-
-from flask import request
-from twilio.twiml.messaging_response import MessagingResponse
-
 @app.route("/bot", methods=["POST"])
 def bot():
-    # Chukua ujumbe wa mteja na ubadilishe kuwa lowercase kwa urahisi wa matching
     msg = request.form.get('Body', '').lower()
     resp = MessagingResponse()
 
-    # List ya maneno yote ya Kiswahili yanayohusiana na bando/data/internet
     huduma_keywords = [
         "bando", "bundle", "data", "internet", "gb", "halotel",
         "bei", "gharama", "nahitaji", "nataka", "nisaidie", "msaada",
@@ -31,95 +23,85 @@ def bot():
         "ninahitaji", "ningependa", "taka", "tunataka", "tunapenda"
     ]
 
-    # Angalia kama mteja anahitaji huduma yoyote
     if any(word in msg for word in huduma_keywords):
 
-        # GB maalum kwa maneno 5,10,12,15,20...
         if "gb 5" in msg:
             resp.message(
                 "✅ GB 5 = 4,500 TSH\n"
-                "💳 Tafadhali lipa kwenye: 0746460472 (Voda)\n"
-                "📸 Tuma screenshot ya malipo baada ya kulipa, tutakuthibitishia bando lako."
+                "💳 Lipia kwenye: 0746460472 (Voda)\n"
+                "✍️ Baada ya kulipa, tafadhali tuma **jina la Muamala** ili bando lako liwe active."
             )
         elif "gb 6" in msg:
             resp.message(
                 "✅ GB 6 = 6,000 TSH\n"
-                "💳 Lipia kwenye: 0746460472 (Voda)\n"
-                "📸 Tuma screenshot ya malipo ili bando lako liwe active."
+                "💳 Lipia: 0746460472 (Voda)\n"
+                "✍️ Baada ya kulipa, tuma **jina la Muamala** ili bando lako liwe active."
             )
         elif "gb 7" in msg:
             resp.message(
                 "✅ GB 7 = 7,000 TSH\n"
                 "💳 Lipia: 0746460472 (Voda)\n"
-                "📸 Tuma screenshot ya malipo ili tukuthibitishie."
+                "✍️ Baada ya malipo, tuma **jina la Muamala** ili bando lako liwe active."
             )
         elif "gb 8" in msg:
             resp.message(
                 "✅ GB 8 = 8,000 TSH\n"
                 "💳 Lipia: 0746460472 (Voda)\n"
-                "📸 Tuma screenshot ya malipo, bando lako litahakikishwa."
-            )
-        elif "gb 9" in msg:
-            resp.message(
-                "✅ GB 9 = 9,000 TSH\n"
-                "💳 Lipia kwenye: 0746460472 (Voda)\n"
-                "📸 Tuma screenshot ya malipo ili bando lako lifanye kazi."
+                "✍️ Baada ya malipo, tuma **jina la Muamala** ili bando lako liwe active."
             )
         elif "gb 10" in msg:
             resp.message(
-                "✅ GB 10 = 9,500 TSH\n"
+                "✅ GB 10 = 9,000 TSH\n"
                 "💳 Lipia: 0746460472 (Voda)\n"
-                "📸 Tuma screenshot ya malipo, tutahakikisha bando lako lipo active."
+                "✍️ Baada ya malipo, tuma **jina la Muamala** ili bando lako liwe active."
             )
         elif "gb 12" in msg:
             resp.message(
                 "✅ GB 12 = 11,500 TSH\n"
                 "💳 Lipia: 0746460472 (Voda)\n"
-                "📸 Tuma screenshot ya malipo, bando lako litapewa nguvu."
+                "✍️ Baada ya malipo, tuma **jina la Muamala** ili bando lako liwe active."
             )
         elif "gb 15" in msg:
             resp.message(
-                "✅ GB 15 = 13,500 TSH\n"
+                "✅ GB 15 = 12,000 TSH\n"
                 "💳 Lipia: 0746460472 (Voda)\n"
-                "📸 Tuma screenshot ya malipo ili bando lako liwe tayari."
+                "✍️ Baada ya malipo, tuma **jina la Muamala** ili bando lako liwe active."
             )
         elif "gb 20" in msg:
             resp.message(
                 "✅ GB 20 = 18,000 TSH\n"
                 "💳 Lipia: 0746460472 (Voda)\n"
-                "📸 Tuma screenshot ya malipo ili bando lako lifanye kazi sasa."
+                "✍️ Baada ya malipo, tuma **jina la Muamala** ili bando lako liwe active."
             )
         elif "gb 25" in msg:
             resp.message(
                 "✅ GB 25 = 23,000 TSH\n"
                 "💳 Lipia: 0746460472 (Voda)\n"
-                "📸 Tuma screenshot ya malipo, bando lako litakuwa active."
+                "✍️ Baada ya malipo, tuma **jina la Muamala** ili bando lako liwe active."
             )
         elif "gb 30" in msg:
             resp.message(
                 "✅ GB 30 = 27,000 TSH\n"
                 "💳 Lipia: 0746460472 (Voda)\n"
-                "📸 Tuma screenshot ya malipo, bando lako litapewa nguvu."
+                "✍️ Baada ya malipo, tuma **jina la Muamala** ili bando lako liwe active."
             )
         elif "gb 35" in msg:
             resp.message(
                 "✅ GB 35 = 30,000 TSH\n"
                 "💳 Lipia: 0746460472 (Voda)\n"
-                "📸 Tuma screenshot ya malipo, tutathibitisha mara moja."
+                "✍️ Baada ya malipo, tuma **jina la Muamala** ili bando lako liwe active."
             )
         else:
-            # Kama hakuna GB maalum imeongelewa
             resp.message(
                 "📡 Karibu Kola Halotel Bundles! 😊\n"
                 "Hapa ni baadhi ya bando zetu:\n"
-                "GB 6 = 6,000 TSH\nGB 7 = 7,000 TSH\nGB 8 = 8,000 TSH\nGB 9 = 9,000 TSH\n"
-                "GB 10 = 9,500 TSH\nGB 12 = 11,500 TSH\nGB 15 = 13,500 TSH\nGB 20 = 18,000 TSH\n"
+                "GB 6 = 6,000 TSH\nGB 7 = 7,000 TSH\nGB 8 = 8,000 TSH\n"
+                "GB 10 = 9,000 TSH\nGB 12 = 11,500 TSH\nGB 15 = 12,000 TSH\nGB 20 = 18,000 TSH\n"
                 "Andika tu: Nataka GB 10 (au yoyote unayohitaji)\n"
-                "💳 Malipo: 0746460472 (Voda)\n"
-                "📸 Tuma screenshot ya malipo ili tukuthibitishie bando lako."
+                "💳 Lipia: 0746460472 (Voda)\n"
+                "✍️ Baada ya malipo, tuma **jina la Muamala** ili tukuthibitishie bando lako."
             )
 
-    # CONFIRMATION YA MALIPO
     elif "nimelipa" in msg or "nimeshalipa" in msg or "malipo yametumwa" in msg:
         resp.message(
             "🙏 Asante sana kwa malipo yako.\n"
@@ -127,14 +109,14 @@ def bot():
             "Tunathamini sana kuwa mteja wetu wa Kola Hub! 💛"
         )
 
-    # DEFAULT REPLY KWA MANENO YOTE MENGINE
     else:
         resp.message(
             "Karibu Kola Halotel Bundles! 😊\n"
             "Andika maneno yoyote yanayohusiana na:\n"
             "- bando\n- data\n- GB\n- internet\n- halotel\n"
             "Mfano: 'Nataka GB 20' au 'Nahitaji bando'\n"
-            "💳 Malipo: 0746460472 (Voda)"
+            "💳 Lipia: 0746460472 (Voda)\n"
+            "✍️ Baada ya malipo, tuma **jina la Muamala** ili tukuthibitishie bando lako."
         )
 
     return str(resp)
@@ -179,6 +161,7 @@ Mwelekeze mteja jinsi ya kulipa na aeleze atume kiasi + namba.
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+
 
 
 
