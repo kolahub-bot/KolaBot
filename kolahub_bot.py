@@ -10,12 +10,78 @@ app = Flask(__name__)
 from flask import request
 from twilio.twiml.messaging_response import MessagingResponse
 
+from flask import request
+from twilio.twiml.messaging_response import MessagingResponse
+
 @app.route("/bot", methods=["POST"])
 def bot():
-    incoming_msg = request.form.get('Body')
-
+    msg = request.form.get('Body', '').lower()
     resp = MessagingResponse()
-    resp.message("BOT IMEPOKEA UJUMBE WAKO SAWA ✅")
+
+    # MANENO YA JUMLA (GENERAL INTENT)
+    huduma_keywords = [
+        "bando", "bundle", "data", "internet", "gb",
+        "halotel", "bei", "gharama", "nahitaji", "nataka",
+        "nisaidie", "msaada"
+    ]
+
+    # ANGALIA KAMA ANAHITAJI HUDUMA
+    if any(word in msg for word in huduma_keywords):
+
+        # GB MAALUM
+        if "gb 20" in msg:
+            resp.message(
+                "✅ GB 20 = 18,000 TSH\n"
+                "💳 Lipa: 0746460472 (Voda)\n"
+                "📸 Tuma screenshot ya malipo hapa."
+            )
+
+        elif "gb 15" in msg:
+            resp.message(
+                "✅ GB 15 = 13,500 TSH\n"
+                "💳 Lipa: 0746460472 (Voda)\n"
+                "📸 Tuma screenshot ya malipo hapa."
+            )
+
+        elif "gb 10" in msg:
+            resp.message(
+                "✅ GB 10 = 9,500 TSH\n"
+                "💳 Lipa: 0746460472 (Voda)\n"
+                "📸 Tuma screenshot ya malipo hapa."
+            )
+
+        else:
+            # AKITUMIA MANENO YOYOTE YA HUDUMA BILA GB MAALUM
+            resp.message(
+                "📡 KOLA HALOTEL BUNDLES 🚨\n"
+                "GB 6 = 6,000 TSH\n"
+                "GB 7 = 7,000 TSH\n"
+                "GB 8 = 8,000 TSH\n"
+                "GB 9 = 9,000 TSH\n"
+                "GB 10 = 9,500 TSH\n"
+                "GB 12 = 11,500 TSH\n"
+                "GB 15 = 13,500 TSH\n"
+                "GB 20 = 18,000 TSH\n\n"
+                "✍️ Andika: Nataka GB 20"
+            )
+
+    # CONFIRMATION
+    elif "nimelipa" in msg or "nimeshalipa" in msg:
+        resp.message(
+            "🙏 Asante kwa malipo.\n"
+            "Bando lako linaandaliwa, tafadhali subiri."
+        )
+
+    # DEFAULT (MTU YOYOTE ATAANDIKA CHOCHOTE)
+    else:
+        resp.message(
+            "Karibu Kola Halotel Bundles 😊\n"
+            "Andika chochote kama:\n"
+            "- bando\n"
+            "- nataka data\n"
+            "- gb 20\n"
+            "- bei ya internet"
+        )
 
     return str(resp)
 
@@ -59,6 +125,7 @@ Mwelekeze mteja jinsi ya kulipa na aeleze atume kiasi + namba.
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+
 
 
 
