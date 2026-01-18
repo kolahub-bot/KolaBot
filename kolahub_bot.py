@@ -7,13 +7,16 @@ openai.api_key = "sk-proj-X4-Fd9Jj050hug1_1R12uofMj1sXC9DLOrsPPjvMbaKymhICrTlM3Y
 
 app = Flask(__name__)
 
+from flask import request
+from twilio.twiml.messaging_response import MessagingResponse
+
 @app.route("/bot", methods=["POST"])
 def bot():
     incoming_msg = request.form.get('Body')
 
     resp = MessagingResponse()
     resp.message("BOT IMEPOKEA UJUMBE WAKO SAWA ✅")
-    reply = resp.message()
+
     return str(resp)
 
     prompt = f"""
@@ -56,6 +59,7 @@ Mwelekeze mteja jinsi ya kulipa na aeleze atume kiasi + namba.
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+
 
 
 
